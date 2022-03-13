@@ -74,9 +74,10 @@ public class BookStorageServiceImpl implements BookStorageService {
 
 	@Override
 	public Integer getStock(String bookId) throws BookNotFoundException {
-
+		Book book = bookService.getbook(bookId);
+		if (!bookStorage.isEmpty())
+			return bookStorage.get(book.getId());
 		return 0;
-
 	}
 
 }

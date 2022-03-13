@@ -75,6 +75,18 @@ public class BookStorageServiceImplTest {
 		assertTrue(libraryServiceImpl.getBooksCatalog().size() == 2);
 	}
 
+	@Test
+	public void addCopyOfBooksWhenNoCopiesPresent_stockOfSameBookShouldReturnTwo() throws BookNotFoundException {
+		String bookId = "123";
+
+		Book book = Book.builder().id(bookId).isbn("ISBN123").title("System Design").build();
+
+		libraryServiceImpl.addBookToStorage(bookId, 2);
+
+		when(bookService.getbook(bookId)).thenReturn(book);
+
+		assertTrue(libraryServiceImpl.getStock(bookId) == 2);
+	}
 
 	// TODO : Test case List
 
