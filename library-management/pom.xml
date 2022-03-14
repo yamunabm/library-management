@@ -20,8 +20,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<springfox-swagger2.version>2.9.2</springfox-swagger2.version>
 		<springfox-swagger-ui.version>2.9.2</springfox-swagger-ui.version>
-		<swagger-annotations.version>1.5.24</swagger-annotations.version>
-		<swagger-models.version>1.5.24</swagger-models.version>
+		<springfox.version>3.0.0</springfox.version>
+		<project.test.result.directory>${project.build.directory}/test-results</project.test.result.directory>
 	</properties>
 
 	<dependencies>
@@ -55,4 +55,63 @@
 			<version>2.9.2</version>
 		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>${jacocoArgLine}</argLine>
+					<reportsDirectory>${project.test.result.directory}/surefire</reportsDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.7</version>
+				<executions>
+					<execution>
+						<id>pre-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<propertyName>jacocoArgLine</propertyName>
+							<destFile>${project.test.result.directory}/jacoco/jacoco.exec</destFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>post-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<dataFile>${project.test.result.directory}/jacoco/jacoco.exec</dataFile>
+							<outputDirectory>${project.test.result.directory}/jacoco</outputDirectory>
+							<excludes>
+								<exclude>com/hexad/library/management/model/*/</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
