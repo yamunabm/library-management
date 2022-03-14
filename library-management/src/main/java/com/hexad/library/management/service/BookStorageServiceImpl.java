@@ -18,7 +18,10 @@ import com.hexad.library.management.exception.UserExceededBookCreditLimitExcepti
 import com.hexad.library.management.exception.UserNotFoundException;
 import com.hexad.library.management.model.Book;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class BookStorageServiceImpl implements BookStorageService {
 
 	@Autowired
@@ -38,10 +41,8 @@ public class BookStorageServiceImpl implements BookStorageService {
 		Set<String> bookIds = bookStorage.keySet();
 		List<Book> books = new ArrayList<Book>();
 		for (String bookId : bookIds) {
-
 			books.add(bookService.getbook(bookId));
 		}
-
 		return books;
 	}
 
@@ -67,8 +68,10 @@ public class BookStorageServiceImpl implements BookStorageService {
 		bookService.getbook(bookId);
 
 		Integer stock = bookStorage.get(bookId);
-		if (stock == null)
+		if (stock == null) {
+			log.error("Book {} is out of stock in library", bookId);
 			throw new OutOfStockException("Book is out of stock in library");
+		}
 
 		// update stock
 		if (stock == 1)
@@ -87,11 +90,13 @@ public class BookStorageServiceImpl implements BookStorageService {
 		} else {
 
 			if (list.contains(bookId)) {
+				log.error("Cant barrow copy of same book!");
 				throw new NotAllowedToBarrowException("Cant barrow copy of same book!");
 			}
 
 			if (list.size() == 2) {
-				throw new UserExceededBookCreditLimitException("User has exceeded book credit limit!");
+				log.error("User {}  has exceeded book credit limit!", userId);
+				throw new UserExceededBookCreditLimitException("User" + userId + " has exceeded book credit limit!");
 			}
 		}
 		barrowList.get(userId).add(bookId);
@@ -111,12 +116,14 @@ public class BookStorageServiceImpl implements BookStorageService {
 	@Override
 	public void resetStorage() {
 		bookStorage.clear();
+		log.info("Cleared Library storage!");
 	}
 
 	@Override
 	public void addBookToStorage(String bookId, int quantity) throws BookNotFoundException {
 		bookService.getbook(bookId);
 		bookStorage.put(bookId, bookStorage.getOrDefault(bookId, 0) + quantity);
+		log.info("Book {} of quantity {} is added to library storage", bookId, quantity);
 	}
 
 	@Override

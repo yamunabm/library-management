@@ -10,7 +10,10 @@ import com.hexad.library.management.exception.BookNotFoundException;
 import com.hexad.library.management.model.Book;
 import com.hexad.library.management.model.Response;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class BookServiceImpl implements BookService {
 
 	List<Book> bookList;
@@ -23,8 +26,10 @@ public class BookServiceImpl implements BookService {
 	public Book getbook(String bookId) throws BookNotFoundException {
 		Optional<Book> bookOptional = this.bookList.stream().filter(id -> bookId.equals(bookId)).findAny();
 
-		if (!bookOptional.isPresent())
+		if (!bookOptional.isPresent()) {
+			log.error("Book {} Does not exists", bookId);
 			throw new BookNotFoundException("Book Does not exists");
+		}
 
 		return bookOptional.get();
 	}
@@ -35,14 +40,15 @@ public class BookServiceImpl implements BookService {
 		Optional<Book> bookOptional = bookList.stream().filter(id -> id.getId().equals(book.getId())).findAny();
 		Response response = new Response();
 		response.setId(book.getId());
-		if(bookOptional.isPresent()) {
+		if (bookOptional.isPresent()) {
 			int indexOf = this.bookList.indexOf(bookOptional.get());
 			bookList.set(indexOf, book);
 			response.setMessage("Updated succesfully!");
-		}else {
+		} else {
 			this.bookList.add(book);
 			response.setMessage("Saved succesfully!");
 		}
+		log.info("Book {} {}", response.getId(), response.getMessage());
 		return response;
 	}
 
