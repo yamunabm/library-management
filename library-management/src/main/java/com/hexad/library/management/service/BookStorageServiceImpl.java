@@ -16,6 +16,7 @@ import com.hexad.library.management.exception.NotAllowedToBarrowException;
 import com.hexad.library.management.exception.OutOfStockException;
 import com.hexad.library.management.exception.UserExceededBookCreditLimitException;
 import com.hexad.library.management.model.Book;
+import com.hexad.library.management.model.BookRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,27 +58,28 @@ public class BookStorageServiceImpl implements BookStorageService {
 	}
 
 	@Override
-	public void barrowBook(String userId, String bookId)
-			throws  ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
-			NotAllowedToBarrowException, BookNotFoundException, OutOfStockException {
+	public void barrowBook(String userId, List<String> bookIds)
+			throws ISBNDoesNotExistsException, UserExceededBookCreditLimitException, NotAllowedToBarrowException,
+			BookNotFoundException, OutOfStockException {
 
-		// add to barrow list
-		addToBarrowList(bookId, userId);
+		for (String bookId : bookIds) {
+			// add to barrow list
+			addToBarrowList(bookId, userId);
 
-		bookService.getbook(bookId);
+			bookService.getbook(bookId);
 
-		Integer stock = bookStorage.get(bookId);
-		if (stock == null) {
-			log.error("Book {} is out of stock in library", bookId);
-			throw new OutOfStockException("Book is out of stock in library");
+			Integer stock = bookStorage.get(bookId);
+			if (stock == null) {
+				log.error("Book {} is out of stock in library", bookId);
+				throw new OutOfStockException("Book is out of stock in library");
+			}
+
+			// update stock
+			if (stock == 1)
+				bookStorage.remove(bookId);
+			else
+				bookStorage.put(bookId, bookStorage.get(bookId) - 1);
 		}
-
-		// update stock
-		if (stock == 1)
-			bookStorage.remove(bookId);
-		else
-			bookStorage.put(bookId, bookStorage.get(bookId) - 1);
-
 	}
 
 	private void addToBarrowList(String bookId, String userId)
@@ -102,14 +104,20 @@ public class BookStorageServiceImpl implements BookStorageService {
 	}
 
 	@Override
-	public void returnBook(String userId, String bookId) throws  BookNotFoundException {
+	public void returnBook(String userId, String bookId) throws BookNotFoundException {
 
 		// remove from barrow list
 		List<String> userBarrowList = barrowList.get(userId);
 		userBarrowList.remove(bookId);
 
 		// restore stock
-		addBookToStorage(bookId, 1);
+
+		List<BookRequest> books = new ArrayList<BookRequest>();
+		BookRequest book = new BookRequest();
+		book.setBookId(bookId);
+		book.setQuantity(1);
+		books.add(book);
+		addBookToStorage(books);
 	}
 
 	@Override
@@ -119,10 +127,13 @@ public class BookStorageServiceImpl implements BookStorageService {
 	}
 
 	@Override
-	public void addBookToStorage(String bookId, int quantity) throws BookNotFoundException {
-		bookService.getbook(bookId);
-		bookStorage.put(bookId, bookStorage.getOrDefault(bookId, 0) + quantity);
-		log.info("Book {} of quantity {} is added to library storage", bookId, quantity);
+	public void addBookToStorage(List<BookRequest> bookRequest) throws BookNotFoundException {
+
+		for (BookRequest books : bookRequest) {
+			bookService.getbook(books.getBookId());
+			bookStorage.put(books.getBookId(), bookStorage.getOrDefault(books.getBookId(), 0) + books.getQuantity());
+			log.info("Book {} of quantity {} is added to library storage", books.getBookId(), books.getQuantity());
+		}
 	}
 
 	@Override

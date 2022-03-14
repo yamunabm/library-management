@@ -37,11 +37,8 @@ public class SwaggerConfig {
 	@Bean
 	public Docket swaggerUI() {
 		return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage(BASE_PKG))
-				.paths(PathSelectors.any()).build().apiInfo(getApiInfo()).host(serviceHost)
-				.tags(new Tag(Constants.Swagger.Tags.BookController.NAME,
-						Constants.Swagger.Tags.BookController.DESCRIPTION),
-						new Tag(Constants.Swagger.Tags.BookStorageController.NAME,
-								Constants.Swagger.Tags.BookStorageController.DESCRIPTION));
+				.paths(PathSelectors.any()).build().apiInfo(getApiInfo()).host(serviceHost);
+				
 	}
 
 	private ApiInfo getApiInfo() {

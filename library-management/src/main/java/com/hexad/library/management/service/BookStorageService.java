@@ -8,6 +8,7 @@ import com.hexad.library.management.exception.NotAllowedToBarrowException;
 import com.hexad.library.management.exception.OutOfStockException;
 import com.hexad.library.management.exception.UserExceededBookCreditLimitException;
 import com.hexad.library.management.model.Book;
+import com.hexad.library.management.model.BookRequest;
 
 public interface BookStorageService {
 
@@ -17,7 +18,7 @@ public interface BookStorageService {
 
 	Integer getStock(String bookId) throws BookNotFoundException;
 
-	void barrowBook(String userId, String bookId)
+	void barrowBook(String userId, List<String> bookIds)
 			throws  ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
 			NotAllowedToBarrowException, BookNotFoundException, OutOfStockException;
 
@@ -25,6 +26,6 @@ public interface BookStorageService {
 
 	void resetStorage();
 
-	void addBookToStorage(String bookId, int quantity) throws BookNotFoundException;
+	void addBookToStorage(List<BookRequest> bookRequest) throws BookNotFoundException;
 
 }
