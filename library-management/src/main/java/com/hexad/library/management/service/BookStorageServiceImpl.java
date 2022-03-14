@@ -1,6 +1,7 @@
 package com.hexad.library.management.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,20 +38,20 @@ public class BookStorageServiceImpl implements BookStorageService {
 		Set<String> bookIds = bookStorage.keySet();
 		List<Book> books = new ArrayList<Book>();
 		for (String bookId : bookIds) {
+
 			books.add(bookService.getbook(bookId));
 		}
+
 		return books;
 	}
 
 	@Override
-	public void addBookToStorage(String bookId, int quantity) throws BookNotFoundException {
-		bookService.getbook(bookId);
-		bookStorage.put(bookId, bookStorage.getOrDefault(bookId, 0) + quantity);
-	}
-
-	@Override
 	public List<Book> getBarrowedBooks(String userId) throws BookNotFoundException {
+		List<String> bookIds = barrowList.getOrDefault(userId, Collections.emptyList());
 		List<Book> books = new ArrayList<Book>();
+		for (String bookId : bookIds) {
+			books.add(bookService.getbook(bookId));
+		}
 
 		return books;
 	}
@@ -99,6 +100,12 @@ public class BookStorageServiceImpl implements BookStorageService {
 	@Override
 	public void returnBook(String userId, String bookId) throws UserNotFoundException, BookNotFoundException {
 
+		// remove from barrow list
+		List<String> userBarrowList = barrowList.get(userId);
+		userBarrowList.remove(bookId);
+
+		// restore stock
+		addBookToStorage(bookId, 1);
 	}
 
 	@Override
@@ -107,11 +114,20 @@ public class BookStorageServiceImpl implements BookStorageService {
 	}
 
 	@Override
-	public Integer getStock(String bookId) throws BookNotFoundException {
-		Book book = bookService.getbook(bookId);
-		if (!bookStorage.isEmpty())
-			return bookStorage.get(book.getId());
-		return 0;
+	public void addBookToStorage(String bookId, int quantity) throws BookNotFoundException {
+		bookService.getbook(bookId);
+		bookStorage.put(bookId, bookStorage.getOrDefault(bookId, 0) + quantity);
 	}
 
+	@Override
+	public Integer getStock(String bookId) throws BookNotFoundException {
+
+		Book book = bookService.getbook(bookId);
+
+		if (!bookStorage.isEmpty())
+			return bookStorage.get(book.getId());
+
+		return 0;
+
+	}
 }

@@ -212,6 +212,71 @@ public class BookStorageServiceImplTest {
 
 	}
 
+	@Test
+	public void returnOneBook_twoBooksInBarrowList_thenOneBookRemovedFromBarrowList_AndLibraryStockCountUpdated()
+			throws BookNotFoundException, UserNotFoundException, ISBNDoesNotExistsException,
+			UserExceededBookCreditLimitException, NotAllowedToBarrowException, OutOfStockException {
+		String bookId_1 = "123";
+		String bookId_2 = "456";
+		String userId = "user1";
+
+		Book book1 = Book.builder().id(bookId_1).isbn("ISBN123").title("System Design").build();
+		Book book2 = Book.builder().id(bookId_2).isbn("ISBN456").title("Architecture").build();
+
+		when(bookService.getbook(bookId_1)).thenReturn(book1);
+		when(bookService.getbook(bookId_2)).thenReturn(book2);
+
+		libraryServiceImpl.addBookToStorage(bookId_1, 1);
+		libraryServiceImpl.addBookToStorage(bookId_2, 1);
+
+		assertTrue(libraryServiceImpl.getBooksCatalog().size() == 2);
+		assertTrue(libraryServiceImpl.getBarrowedBooks(userId).size() == 0);
+
+		libraryServiceImpl.barrowBook(userId, bookId_1);
+		libraryServiceImpl.barrowBook(userId, bookId_2);
+
+		assertTrue(libraryServiceImpl.getBooksCatalog().size() == 0);
+		assertTrue(libraryServiceImpl.getBarrowedBooks(userId).size() == 2);
+
+		libraryServiceImpl.returnBook(userId, bookId_1);
+
+		assertTrue(libraryServiceImpl.getBooksCatalog().size() == 1);
+		assertTrue(libraryServiceImpl.getBarrowedBooks(userId).size() == 1);
+	}
+
+	@Test
+	public void returnTwoBooks_twoBooksInBarrowList_thenBarrowListBecomesEmpty_AndLibraryStockCountUpdated()
+			throws BookNotFoundException, UserNotFoundException, ISBNDoesNotExistsException,
+			UserExceededBookCreditLimitException, NotAllowedToBarrowException, OutOfStockException {
+		String bookId_1 = "123";
+		String bookId_2 = "456";
+		String userId = "user1";
+
+		Book book1 = Book.builder().id(bookId_1).isbn("ISBN123").title("System Design").build();
+		Book book2 = Book.builder().id(bookId_2).isbn("ISBN456").title("Architecture").build();
+
+		when(bookService.getbook(bookId_1)).thenReturn(book1);
+		when(bookService.getbook(bookId_2)).thenReturn(book2);
+
+		libraryServiceImpl.addBookToStorage(bookId_1, 1);
+		libraryServiceImpl.addBookToStorage(bookId_2, 1);
+
+		assertTrue(libraryServiceImpl.getBooksCatalog().size() == 2);
+		assertTrue(libraryServiceImpl.getBarrowedBooks(userId).size() == 0);
+
+		libraryServiceImpl.barrowBook(userId, bookId_1);
+		libraryServiceImpl.barrowBook(userId, bookId_2);
+
+		assertTrue(libraryServiceImpl.getBooksCatalog().size() == 0);
+		assertTrue(libraryServiceImpl.getBarrowedBooks(userId).size() == 2);
+
+		libraryServiceImpl.returnBook(userId, bookId_1);
+		libraryServiceImpl.returnBook(userId, bookId_2);
+
+		assertTrue(libraryServiceImpl.getBooksCatalog().size() == 2);
+		assertTrue(libraryServiceImpl.getBarrowedBooks(userId).size() == 0);
+	}
+
 	// TODO : Test case List
 
 	// getBooksWhenNoBooksPresent_shouldReturnEmptyList - done

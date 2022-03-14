@@ -51,4 +51,35 @@ public class BookStorageController {
 
 		return ResponseEntity.ok(books);
 	}
+
+	@DeleteMapping(value = "/{reset}")
+	public ResponseEntity<?> resetStorage() {
+		bookStorageService.resetStorage();
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping
+	public ResponseEntity<?> addBookToStorage(@RequestBody JsonNode jsonNode) throws BookNotFoundException {
+		String bookId = jsonNode.get("bookId").asText();
+		int quantity = jsonNode.get("bookId").asInt();
+
+		bookStorageService.addBookToStorage(bookId, quantity);
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping(value = "barrow")
+	public ResponseEntity<?> barrowBook(String userId, String bookId)
+			throws UserNotFoundException, ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
+			NotAllowedToBarrowException, BookNotFoundException, OutOfStockException {
+		bookStorageService.barrowBook(userId, bookId);
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping(value = "return")
+	public ResponseEntity<?> returnBook(String userId, String bookId)
+			throws UserNotFoundException, BookNotFoundException {
+		bookStorageService.returnBook(userId, bookId);
+		return ResponseEntity.ok().build();
+	}
+
 }
