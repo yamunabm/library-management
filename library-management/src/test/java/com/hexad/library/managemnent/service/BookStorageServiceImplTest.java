@@ -126,7 +126,91 @@ public class BookStorageServiceImplTest {
 		assertTrue(libraryServiceImpl.getStock(bookId) == 1);
 	}
 
-	
+	@Test
+	public void barrowBook_oneCopyOfBookPresent_thenBookAddedToBarrowList_andBookIsRemovedFromLibrary()
+			throws BookNotFoundException, UserNotFoundException, ISBNDoesNotExistsException,
+			UserExceededBookCreditLimitException, NotAllowedToBarrowException, OutOfStockException {
+		String bookId = "123";
+		String userId = "user1";
+
+		Book book = Book.builder().id(bookId).isbn("ISBN123").title("System Design").build();
+
+		when(bookService.getbook(bookId)).thenReturn(book);
+		libraryServiceImpl.addBookToStorage(bookId, 1);
+
+		assertTrue(libraryServiceImpl.getStock(bookId) == 1);
+
+		libraryServiceImpl.barrowBook(userId, bookId);
+
+		assertTrue(libraryServiceImpl.getStock(bookId) == 0);
+	}
+
+	@Test
+	public void barrowBook_UserExceededBookCreditLimit_thenThrowException()
+			throws BookNotFoundException, UserNotFoundException, ISBNDoesNotExistsException,
+			UserExceededBookCreditLimitException, NotAllowedToBarrowException, OutOfStockException {
+		String bookId_1 = "123";
+		String bookId_2 = "456";
+		String bookId_3 = "789";
+		String userId = "user1";
+
+		Book book1 = Book.builder().id(bookId_1).isbn("ISBN123").title("System Design").build();
+		Book book2 = Book.builder().id(bookId_2).isbn("ISBN456").title("Architecture").build();
+
+		when(bookService.getbook(bookId_1)).thenReturn(book1);
+		when(bookService.getbook(bookId_2)).thenReturn(book2);
+
+		libraryServiceImpl.addBookToStorage(bookId_1, 1);
+		libraryServiceImpl.addBookToStorage(bookId_2, 1);
+		libraryServiceImpl.addBookToStorage(bookId_3, 1);
+
+		libraryServiceImpl.barrowBook(userId, bookId_1);
+		libraryServiceImpl.barrowBook(userId, bookId_2);
+
+		assertThrows(UserExceededBookCreditLimitException.class, () -> {
+			libraryServiceImpl.barrowBook(userId, bookId_3);
+		});
+
+	}
+
+	@Test
+	public void barrowBook_UserBuyingSamrCopyTwice_thenThrowException()
+			throws BookNotFoundException, UserNotFoundException, ISBNDoesNotExistsException,
+			UserExceededBookCreditLimitException, NotAllowedToBarrowException, OutOfStockException {
+		String bookId = "123";
+		String userId_1 = "user1";
+
+		Book book1 = Book.builder().id(bookId).isbn("ISBN123").title("System Design").build();
+		when(bookService.getbook(bookId)).thenReturn(book1);
+
+		libraryServiceImpl.addBookToStorage(bookId, 1);
+		libraryServiceImpl.barrowBook(userId_1, bookId);
+
+		assertThrows(NotAllowedToBarrowException.class, () -> {
+			libraryServiceImpl.barrowBook(userId_1, bookId);
+		});
+
+	}
+
+	@Test
+	public void barrowBook_NoBooksInStock_thenThrowOtOfStockException()
+			throws BookNotFoundException, UserNotFoundException, ISBNDoesNotExistsException,
+			UserExceededBookCreditLimitException, NotAllowedToBarrowException, OutOfStockException {
+		String bookId = "123";
+		String userId_1 = "user1";
+		String userId_2 = "user2";
+
+		Book book1 = Book.builder().id(bookId).isbn("ISBN123").title("System Design").build();
+		when(bookService.getbook(bookId)).thenReturn(book1);
+
+		libraryServiceImpl.addBookToStorage(bookId, 1);
+		libraryServiceImpl.barrowBook(userId_1, bookId);
+
+		assertThrows(OutOfStockException.class, () -> {
+			libraryServiceImpl.barrowBook(userId_2, bookId);
+		});
+
+	}
 
 	// TODO : Test case List
 
