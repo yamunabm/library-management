@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  library-management:
+    image: library-management
+    container_name: library-management
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
