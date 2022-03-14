@@ -60,6 +60,40 @@ public class BookStorageServiceImpl implements BookStorageService {
 			throws UserNotFoundException, ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
 			NotAllowedToBarrowException, BookNotFoundException, OutOfStockException {
 
+		// add to barrow list
+		addToBarrowList(bookId, userId);
+
+		bookService.getbook(bookId);
+
+		Integer stock = bookStorage.get(bookId);
+		if (stock == null)
+			throw new OutOfStockException("Book is out of stock in library");
+
+		// update stock
+		if (stock == 1)
+			bookStorage.remove(bookId);
+		else
+			bookStorage.put(bookId, bookStorage.get(bookId) - 1);
+
+	}
+
+	private void addToBarrowList(String bookId, String userId)
+			throws NotAllowedToBarrowException, UserExceededBookCreditLimitException {
+		List<String> list = barrowList.get(userId);
+
+		if (list == null) {
+			barrowList.put(userId, new ArrayList<String>());
+		} else {
+
+			if (list.contains(bookId)) {
+				throw new NotAllowedToBarrowException("Cant barrow copy of same book!");
+			}
+
+			if (list.size() == 2) {
+				throw new UserExceededBookCreditLimitException("User has exceeded book credit limit!");
+			}
+		}
+		barrowList.get(userId).add(bookId);
 	}
 
 	@Override

@@ -88,6 +88,46 @@ public class BookStorageServiceImplTest {
 		assertTrue(libraryServiceImpl.getStock(bookId) == 2);
 	}
 
+	@Test
+	public void barrowBook_thenBookAddedToBarrowList_AndBookIsRemovedFromLibrary()
+			throws BookNotFoundException, UserNotFoundException, ISBNDoesNotExistsException,
+			UserExceededBookCreditLimitException, NotAllowedToBarrowException, OutOfStockException {
+		String bookId = "123";
+		String userId = "user1";
+
+		Book book = Book.builder().id(bookId).isbn("ISBN123").title("System Design").build();
+
+		when(bookService.getbook(bookId)).thenReturn(book);
+		libraryServiceImpl.addBookToStorage(bookId, 1);
+
+		assertTrue(libraryServiceImpl.getStock(bookId) == 1);
+
+		libraryServiceImpl.barrowBook(userId, bookId);
+
+		assertTrue(libraryServiceImpl.getStock(bookId) == 0);
+	}
+
+	@Test
+	public void barrowBook_moreCopyOfBookPresent_thenBookAddedToBarrowList_andAtleastOneCopyOfBookPresentInLibrary()
+			throws BookNotFoundException, UserNotFoundException, ISBNDoesNotExistsException,
+			UserExceededBookCreditLimitException, NotAllowedToBarrowException, OutOfStockException {
+		String bookId = "123";
+		String userId = "user1";
+
+		Book book = Book.builder().id(bookId).isbn("ISBN123").title("System Design").build();
+
+		when(bookService.getbook(bookId)).thenReturn(book);
+		libraryServiceImpl.addBookToStorage(bookId, 2);
+
+		assertTrue(libraryServiceImpl.getStock(bookId) == 2);
+
+		libraryServiceImpl.barrowBook(userId, bookId);
+
+		assertTrue(libraryServiceImpl.getStock(bookId) == 1);
+	}
+
+	
+
 	// TODO : Test case List
 
 	// getBooksWhenNoBooksPresent_shouldReturnEmptyList - done
