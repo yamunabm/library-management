@@ -18,7 +18,6 @@ import com.hexad.library.management.exception.ISBNDoesNotExistsException;
 import com.hexad.library.management.exception.NotAllowedToBarrowException;
 import com.hexad.library.management.exception.OutOfStockException;
 import com.hexad.library.management.exception.UserExceededBookCreditLimitException;
-import com.hexad.library.management.exception.UserNotFoundException;
 import com.hexad.library.management.model.Book;
 import com.hexad.library.management.service.BookStorageService;
 
@@ -69,7 +68,7 @@ public class BookStorageController {
 
 	@PostMapping(value = "barrow")
 	public ResponseEntity<?> barrowBook(String userId, String bookId)
-			throws UserNotFoundException, ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
+			throws  ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
 			NotAllowedToBarrowException, BookNotFoundException, OutOfStockException {
 		bookStorageService.barrowBook(userId, bookId);
 		return ResponseEntity.ok().build();
@@ -77,7 +76,7 @@ public class BookStorageController {
 
 	@PostMapping(value = "return")
 	public ResponseEntity<?> returnBook(String userId, String bookId)
-			throws UserNotFoundException, BookNotFoundException {
+			throws  BookNotFoundException {
 		bookStorageService.returnBook(userId, bookId);
 		return ResponseEntity.ok().build();
 	}

@@ -36,4 +36,7 @@ public interface Constants {
 			String CREATE_ORDER = "create";
 		}
 	}
+
+	String NOT_ALLOWED_TO_BARROW = "NOT_ALLOWED_TO_BARROW";
+	String OUT_OF_STOCK = "OUT_OF_STOCK";
 }

@@ -15,7 +15,6 @@ import com.hexad.library.management.exception.ISBNDoesNotExistsException;
 import com.hexad.library.management.exception.NotAllowedToBarrowException;
 import com.hexad.library.management.exception.OutOfStockException;
 import com.hexad.library.management.exception.UserExceededBookCreditLimitException;
-import com.hexad.library.management.exception.UserNotFoundException;
 import com.hexad.library.management.model.Book;
 
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +58,7 @@ public class BookStorageServiceImpl implements BookStorageService {
 
 	@Override
 	public void barrowBook(String userId, String bookId)
-			throws UserNotFoundException, ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
+			throws  ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
 			NotAllowedToBarrowException, BookNotFoundException, OutOfStockException {
 
 		// add to barrow list
@@ -103,7 +102,7 @@ public class BookStorageServiceImpl implements BookStorageService {
 	}
 
 	@Override
-	public void returnBook(String userId, String bookId) throws UserNotFoundException, BookNotFoundException {
+	public void returnBook(String userId, String bookId) throws  BookNotFoundException {
 
 		// remove from barrow list
 		List<String> userBarrowList = barrowList.get(userId);
