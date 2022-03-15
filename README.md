@@ -104,3 +104,6 @@ GET "http://localhost:8080/library/v1/bookstorage/stock/123"
 DELETE "http://localhost:8080/library/v1/bookstorage"
 
 ```
+Note:
+./post_requests_load_book.sh is just for posting the books for handy
+User management, register, login etc are not taken care and user is not validated
