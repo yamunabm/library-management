@@ -37,6 +37,20 @@ Now hit this link http://localhost:8080/swagger-ui.html in browser.
 
 ## APIs
 
+## Book
+Add a new book
+
+```
+POST "http://localhost:8080/library/v1/book"
+```
+
+View a book
+
+```
+GET "http://localhost:8080/library/v1/book?bookId=111"
+```
+
+## Book Storage/Library
 View all books from Library
 
 ```

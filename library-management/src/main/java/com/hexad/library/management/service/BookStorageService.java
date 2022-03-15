@@ -3,7 +3,6 @@ package com.hexad.library.management.service;
 import java.util.List;
 
 import com.hexad.library.management.exception.BookNotFoundException;
-import com.hexad.library.management.exception.ISBNDoesNotExistsException;
 import com.hexad.library.management.exception.NotAllowedToBarrowException;
 import com.hexad.library.management.exception.OutOfStockException;
 import com.hexad.library.management.exception.UserExceededBookCreditLimitException;
@@ -18,11 +17,10 @@ public interface BookStorageService {
 
 	Integer getStock(String bookId) throws BookNotFoundException;
 
-	void barrowBook(String userId, List<String> bookIds)
-			throws  ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
+	void barrowBook(String userId, List<String> bookIds) throws UserExceededBookCreditLimitException,
 			NotAllowedToBarrowException, BookNotFoundException, OutOfStockException;
 
-	void returnBook(String userId, String bookId) throws  BookNotFoundException;
+	void returnBook(String userId, String bookId) throws BookNotFoundException;
 
 	void resetStorage();
 

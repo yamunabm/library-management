@@ -1,14 +1,9 @@
 package com.hexad.library.managemnent.controller;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,12 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import com.hexad.library.management.controller.BookController;
 import com.hexad.library.management.exception.BookNotFoundException;
 import com.hexad.library.management.model.Book;
-import com.hexad.library.management.model.Response;
 import com.hexad.library.management.service.BookService;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,9 +28,9 @@ public class BookControllerTest {
 
 	@Test
 	public void getbook_noBookPresent_thenThrowBookNotFoundException() throws BookNotFoundException {
-		
+
 		when(bookService.getbook(anyString())).thenThrow(BookNotFoundException.class);
-		
+
 		assertThrows(BookNotFoundException.class, () -> {
 			bookController.getbook("123");
 		});

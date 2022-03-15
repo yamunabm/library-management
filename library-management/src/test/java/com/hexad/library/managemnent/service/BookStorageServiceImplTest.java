@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.hexad.library.management.exception.BookNotFoundException;
-import com.hexad.library.management.exception.ISBNDoesNotExistsException;
 import com.hexad.library.management.exception.NotAllowedToBarrowException;
 import com.hexad.library.management.exception.OutOfStockException;
 import com.hexad.library.management.exception.UserExceededBookCreditLimitException;
@@ -116,9 +115,8 @@ public class BookStorageServiceImplTest {
 	}
 
 	@Test
-	public void barrowBook_thenBookAddedToBarrowList_AndBookIsRemovedFromLibrary()
-			throws BookNotFoundException, ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
-			NotAllowedToBarrowException, OutOfStockException {
+	public void barrowBook_thenBookAddedToBarrowList_AndBookIsRemovedFromLibrary() throws BookNotFoundException,
+			UserExceededBookCreditLimitException, NotAllowedToBarrowException, OutOfStockException {
 		String bookId = "123";
 		String userId = "user1";
 
@@ -143,8 +141,8 @@ public class BookStorageServiceImplTest {
 
 	@Test
 	public void barrowBook_moreCopyOfBookPresent_thenBookAddedToBarrowList_andAtleastOneCopyOfBookPresentInLibrary()
-			throws BookNotFoundException, ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
-			NotAllowedToBarrowException, OutOfStockException {
+			throws BookNotFoundException, UserExceededBookCreditLimitException, NotAllowedToBarrowException,
+			OutOfStockException {
 		String bookId = "123";
 		String userId = "user1";
 
@@ -169,8 +167,8 @@ public class BookStorageServiceImplTest {
 
 	@Test
 	public void barrowBook_oneCopyOfBookPresent_thenBookAddedToBarrowList_andBookIsRemovedFromLibrary()
-			throws BookNotFoundException, ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
-			NotAllowedToBarrowException, OutOfStockException {
+			throws BookNotFoundException, UserExceededBookCreditLimitException, NotAllowedToBarrowException,
+			OutOfStockException {
 		String bookId = "123";
 		String userId = "user1";
 
@@ -195,9 +193,8 @@ public class BookStorageServiceImplTest {
 	}
 
 	@Test
-	public void barrowBook_UserExceededBookCreditLimit_thenThrowException()
-			throws BookNotFoundException, ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
-			NotAllowedToBarrowException, OutOfStockException {
+	public void barrowBook_UserExceededBookCreditLimit_thenThrowException() throws BookNotFoundException,
+			UserExceededBookCreditLimitException, NotAllowedToBarrowException, OutOfStockException {
 		String bookId_1 = "123";
 		String bookId_2 = "456";
 		String bookId_3 = "789";
@@ -238,9 +235,8 @@ public class BookStorageServiceImplTest {
 	}
 
 	@Test
-	public void barrowBook_UserBuyingSameCopyTwice_thenThrowException()
-			throws BookNotFoundException, ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
-			NotAllowedToBarrowException, OutOfStockException {
+	public void barrowBook_UserBuyingSameCopyTwice_thenThrowException() throws BookNotFoundException,
+			UserExceededBookCreditLimitException, NotAllowedToBarrowException, OutOfStockException {
 		String bookId = "123";
 		String userId_1 = "user1";
 
@@ -265,9 +261,8 @@ public class BookStorageServiceImplTest {
 	}
 
 	@Test
-	public void barrowBook_NoBooksInStock_thenThrowOtOfStockException()
-			throws BookNotFoundException, ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
-			NotAllowedToBarrowException, OutOfStockException {
+	public void barrowBook_NoBooksInStock_thenThrowOtOfStockException() throws BookNotFoundException,
+			UserExceededBookCreditLimitException, NotAllowedToBarrowException, OutOfStockException {
 		String bookId = "123";
 		String userId_1 = "user1";
 		String userId_2 = "user2";
@@ -296,8 +291,8 @@ public class BookStorageServiceImplTest {
 
 	@Test
 	public void returnOneBook_twoBooksInBarrowList_thenOneBookRemovedFromBarrowList_AndLibraryStockCountUpdated()
-			throws BookNotFoundException, ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
-			NotAllowedToBarrowException, OutOfStockException {
+			throws BookNotFoundException, UserExceededBookCreditLimitException, NotAllowedToBarrowException,
+			OutOfStockException {
 		String bookId_1 = "123";
 		String bookId_2 = "456";
 		String userId = "user1";
@@ -313,7 +308,7 @@ public class BookStorageServiceImplTest {
 		bookReq.setBookId(bookId_1);
 		bookReq.setQuantity(1);
 		books.add(bookReq);
-		
+
 		BookRequest bookReq2 = new BookRequest();
 		bookReq2.setBookId(bookId_2);
 		bookReq2.setQuantity(1);
@@ -340,8 +335,8 @@ public class BookStorageServiceImplTest {
 
 	@Test
 	public void returnTwoBooks_twoBooksInBarrowList_thenBarrowListBecomesEmpty_AndLibraryStockCountUpdated()
-			throws BookNotFoundException, ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
-			NotAllowedToBarrowException, OutOfStockException {
+			throws BookNotFoundException, UserExceededBookCreditLimitException, NotAllowedToBarrowException,
+			OutOfStockException {
 		String bookId_1 = "123";
 		String bookId_2 = "456";
 		String userId = "user1";

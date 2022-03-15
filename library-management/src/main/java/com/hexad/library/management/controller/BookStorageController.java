@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.hexad.library.management.exception.BookNotFoundException;
-import com.hexad.library.management.exception.ISBNDoesNotExistsException;
 import com.hexad.library.management.exception.NotAllowedToBarrowException;
 import com.hexad.library.management.exception.OutOfStockException;
 import com.hexad.library.management.exception.UserExceededBookCreditLimitException;
@@ -44,8 +42,8 @@ public class BookStorageController {
 
 	@GetMapping(value = "barrow")
 	public ResponseEntity<?> barrowBook(@RequestParam String userId, @RequestParam List<String> bookIds)
-			throws  ISBNDoesNotExistsException, UserExceededBookCreditLimitException,
-			NotAllowedToBarrowException, BookNotFoundException, OutOfStockException {
+			throws UserExceededBookCreditLimitException, NotAllowedToBarrowException, BookNotFoundException,
+			OutOfStockException {
 		bookStorageService.barrowBook(userId, bookIds);
 		return ResponseEntity.ok().build();
 	}
@@ -64,8 +62,7 @@ public class BookStorageController {
 	}
 
 	@PostMapping(value = "return")
-	public ResponseEntity<?> returnBook(String userId, String bookId)
-			throws  BookNotFoundException {
+	public ResponseEntity<?> returnBook(String userId, String bookId) throws BookNotFoundException {
 		bookStorageService.returnBook(userId, bookId);
 		return ResponseEntity.ok().build();
 	}

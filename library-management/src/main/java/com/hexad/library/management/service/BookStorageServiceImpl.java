@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hexad.library.management.exception.BookNotFoundException;
-import com.hexad.library.management.exception.ISBNDoesNotExistsException;
 import com.hexad.library.management.exception.NotAllowedToBarrowException;
 import com.hexad.library.management.exception.OutOfStockException;
 import com.hexad.library.management.exception.UserExceededBookCreditLimitException;
@@ -58,9 +57,8 @@ public class BookStorageServiceImpl implements BookStorageService {
 	}
 
 	@Override
-	public void barrowBook(String userId, List<String> bookIds)
-			throws ISBNDoesNotExistsException, UserExceededBookCreditLimitException, NotAllowedToBarrowException,
-			BookNotFoundException, OutOfStockException {
+	public void barrowBook(String userId, List<String> bookIds) throws UserExceededBookCreditLimitException,
+			NotAllowedToBarrowException, BookNotFoundException, OutOfStockException {
 
 		for (String bookId : bookIds) {
 			// add to barrow list
